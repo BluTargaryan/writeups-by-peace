@@ -4,8 +4,12 @@ import logo from './images/stripped-logo.svg'
 import WriteUpItem from "./components/WriteUpItem";
 import Footer from "./components/Footer";
 
-export default function Home() {
+export const revalidate = 60
+export default async function Home() {
+  let data = await fetch('http://localhost/writeupsByPeace/wp-json/wp/v2/posts')
+  let posts = await data.json()
 
+  console.log(posts)
   
   return (
     <main className="py-20 px-7 flex flex-col text-center">
@@ -23,9 +27,18 @@ export default function Home() {
       </header>
   
   <section className="grid grid-cols-1 gap-7 px-4 py-20 md:px-10 md:grid-cols-2 xl:grid-cols-3">
-  {Array.from({ length: 5 }).map((item, index) => (
-     <WriteUpItem key={index}/>
-     ))}
+  {
+    posts.map((post:any)=>(
+<WriteUpItem
+key={post.id}
+id={post.id}
+title={post.title.rendered}
+content={post.content.rendered}
+/>
+    ))
+  }
+     
+
   </section>
 
 <Footer />
